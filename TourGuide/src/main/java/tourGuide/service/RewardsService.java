@@ -13,7 +13,7 @@ import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
 @Service
-public class RewardsService {
+public class RewardsService implements IRewardsService {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
 
 	// proximity in miles
@@ -29,21 +29,26 @@ public class RewardsService {
 	}
 	
 	public void setProximityBuffer(int proximityBuffer) {
+
 		this.proximityBuffer = proximityBuffer;
 	}
 	
 	public void setDefaultProximityBuffer() {
+
 		proximityBuffer = defaultProximityBuffer;
 	}
 	
 	public void calculateRewards(User user) {
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		
+
+		//@todo double for o(n²)
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
+				//il fait quoi ce filtre sur lui même ?
+				// stocker user.getUserRewards en variable pour la réutiliser à chaque itération ?
 				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if(nearAttraction(visitedLocation, attraction)) {
+					if(isVisitedLocationWithAttractionProximity(visitedLocation, attraction)) {
 						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
 					}
 				}
@@ -51,15 +56,16 @@ public class RewardsService {
 		}
 	}
 	
-	public boolean isWithinAttractionProximity(Attraction attraction, Location location) {
+	public boolean isLocationWithinAttractionProximity(Attraction attraction, Location location) {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
 	}
-	
-	private boolean nearAttraction(VisitedLocation visitedLocation, Attraction attraction) {
+
+	// à ajouter à l'interface ?
+	private boolean isVisitedLocationWithAttractionProximity(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
-	private int getRewardPoints(Attraction attraction, User user) {
+	public int getRewardPoints(Attraction attraction, User user) {
 		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
 	}
 	

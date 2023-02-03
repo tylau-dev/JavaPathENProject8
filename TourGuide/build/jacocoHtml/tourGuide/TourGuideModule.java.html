@@ -5,25 +5,29 @@ import org.springframework.context.annotation.Configuration;
 
 import gpsUtil.GpsUtil;
 import rewardCentral.RewardCentral;
+import tourGuide.service.IRewardsService;
 import tourGuide.service.RewardsService;
 
 @Configuration
-<span class="nc" id="L11">public class TourGuideModule {</span>
-	
-	@Bean
-	public GpsUtil getGpsUtil() {
-<span class="nc" id="L15">		return new GpsUtil();</span>
-	}
-	
-	@Bean
-	public RewardsService getRewardsService() {
-<span class="nc" id="L20">		return new RewardsService(getGpsUtil(), getRewardCentral());</span>
-	}
-	
-	@Bean
-	public RewardCentral getRewardCentral() {
-<span class="nc" id="L25">		return new RewardCentral();</span>
-	}
-	
+<span class="nc" id="L12">public class TourGuideModule {</span>
+
+    @Bean
+    public GpsUtil getGpsUtil() {
+
+<span class="nc" id="L17">        return new GpsUtil();</span>
+    }
+
+    @Bean
+    public IRewardsService getRewardsService() {
+
+<span class="nc" id="L23">        return new RewardsService(getGpsUtil(), getRewardCentral());</span>
+    }
+
+    @Bean
+    public RewardCentral getRewardCentral() {
+
+<span class="nc" id="L29">        return new RewardCentral();</span>
+    }
+
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
