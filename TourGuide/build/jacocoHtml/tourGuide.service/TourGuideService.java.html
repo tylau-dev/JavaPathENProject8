@@ -54,7 +54,7 @@ public class TourGuideService implements ITourGuideService{
 	}
 	
 	public List&lt;User&gt; getAllUsers() {
-<span class="nc" id="L57">		return internalUserMap.values().stream().collect(Collectors.toList());</span>
+<span class="nc" id="L57">		return new ArrayList&lt;&gt;(internalUserMap.values());</span>
 	}
 	
 	public void addUser(User user) {

@@ -24,8 +24,17 @@ public class TourGuideTestService extends TourGuideService implements ITourGuide
     // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
     public static final String tripPricerApiKey = "test-server-api-key";
 
+    public User getUser(String userName) {
+        return internalUserMap.get(userName);
+    }
+
+    public void addUser(User user) {
+        if(!internalUserMap.containsKey(user.getUserName())) {
+            internalUserMap.put(user.getUserName(), user);
+        }
+    }
     public List<User> getAllUsers() {
-        return internalUserMap.values().stream().collect(Collectors.toList());
+        return new ArrayList<>(internalUserMap.values());
     }
     public TourGuideTestService(GpsUtil gpsUtil, IRewardsService rewardsService) {
         super(gpsUtil, rewardsService);

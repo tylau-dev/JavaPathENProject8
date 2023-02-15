@@ -57,8 +57,7 @@ public class TestPerformance {
         InternalTestHelper.setInternalUserNumber(100);
         ITourGuideTestService tourGuideService = new TourGuideTestService(gpsUtil, rewardsService);
 
-        List<User> allUsers = new ArrayList<>();
-        allUsers = tourGuideService.getAllUsers();
+        List<User> allUsers = tourGuideService.getAllUsers();
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
@@ -86,8 +85,7 @@ public class TestPerformance {
         ITourGuideTestService tourGuideService = new TourGuideTestService(gpsUtil, rewardsService);
 
         Attraction attraction = gpsUtil.getAttractions().get(0);
-        List<User> allUsers = new ArrayList<>();
-        allUsers = tourGuideService.getAllUsers();
+        List<User> allUsers = tourGuideService.getAllUsers();
         allUsers.forEach(u -> u.addToVisitedLocations(new VisitedLocation(u.getUserId(), attraction, new Date())));
 
         allUsers.forEach(u -> {

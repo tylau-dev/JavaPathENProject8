@@ -3,6 +3,7 @@ package tourGuide;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
@@ -79,7 +80,7 @@ public class TestTourGuideService {
 
 		tourGuideService.addUser(user);
 		tourGuideService.addUser(user2);
-		
+
 		List<User> allUsers = tourGuideService.getAllUsers();
 
 		tourGuideService.getTracker().stopTracking();
