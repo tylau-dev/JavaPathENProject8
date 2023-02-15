@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tourGuide.TestRewardsService" tests="1" skipped="0" failures="1" errors="0" timestamp="2023-02-15T13:56:46" hostname="DESKTOP-1E3B440" time="10.789">
+<testsuite name="tourGuide.TestRewardsService" tests="1" skipped="0" failures="1" errors="0" timestamp="2023-02-15T14:11:13" hostname="DESKTOP-1E3B440" time="0.242">
   <properties/>
-  <testcase name="nearAllAttractions" classname="tourGuide.TestRewardsService" time="10.789">
-    <failure message="java.util.ConcurrentModificationException" type="java.util.ConcurrentModificationException">java.util.ConcurrentModificationException
-	at java.util.ArrayList$Itr.checkForComodification(ArrayList.java:911)
-	at java.util.ArrayList$Itr.next(ArrayList.java:861)
-	at tourGuide.service.RewardsService.calculateRewards(RewardsService.java:49)
-	at tourGuide.TestRewardsService.nearAllAttractions(TestRewardsService.java:66)
+  <testcase name="nearAllAttractions" classname="tourGuide.TestRewardsService" time="0.242">
+    <failure message="java.lang.AssertionError: expected:&lt;26&gt; but was:&lt;0&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;26&gt; but was:&lt;0&gt;
+	at org.junit.Assert.fail(Assert.java:88)
+	at org.junit.Assert.failNotEquals(Assert.java:834)
+	at org.junit.Assert.assertEquals(Assert.java:645)
+	at org.junit.Assert.assertEquals(Assert.java:631)
+	at tourGuide.TestRewardsService.nearAllAttractions(TestRewardsService.java:70)
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -57,13 +58,15 @@
 	at java.lang.Thread.run(Thread.java:750)
 </failure>
   </testcase>
-  <system-out><![CDATA[14:56:46.905 [Test worker] INFO tourGuide.service.TourGuideTestService - TestMode enabled
-14:56:46.916 [Test worker] DEBUG tourGuide.service.TourGuideTestService - Initializing users
-14:56:46.997 [Test worker] DEBUG tourGuide.service.TourGuideTestService - Created 1 internal test users.
-14:56:46.997 [Test worker] DEBUG tourGuide.service.TourGuideTestService - Finished initializing users
-14:56:47.004 [pool-1-thread-1] DEBUG tourGuide.tracker.Tracker - Begin Tracker. Tracking 1 users.
+  <system-out><![CDATA[15:11:13.262 [Test worker] INFO tourGuide.service.TourGuideTestService - TestMode enabled
+15:11:13.271 [Test worker] DEBUG tourGuide.service.TourGuideTestService - Initializing users
+15:11:13.346 [Test worker] DEBUG tourGuide.service.TourGuideTestService - Created 1 internal test users.
+15:11:13.346 [Test worker] DEBUG tourGuide.service.TourGuideTestService - Finished initializing users
+15:11:13.354 [pool-1-thread-1] DEBUG tourGuide.tracker.Tracker - Begin Tracker. Tracking 1 users.
+15:11:13.386 [pool-1-thread-1] DEBUG tourGuide.tracker.Tracker - Tracker Time Elapsed: 0 seconds.
+15:11:13.386 [pool-1-thread-1] DEBUG tourGuide.tracker.Tracker - Tracker sleeping
 ]]></system-out>
-  <system-err><![CDATA[Feb 15, 2023 2:56:46 PM org.javamoney.moneta.DefaultMonetaryContextFactory createMonetaryContextNonNullConfig
+  <system-err><![CDATA[Feb 15, 2023 3:11:13 PM org.javamoney.moneta.DefaultMonetaryContextFactory createMonetaryContextNonNullConfig
 INFO: Using custom MathContext: precision=256, roundingMode=HALF_EVEN
 ]]></system-err>
 </testsuite>

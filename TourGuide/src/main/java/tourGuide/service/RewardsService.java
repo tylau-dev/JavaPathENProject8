@@ -1,6 +1,7 @@
 package tourGuide.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -46,22 +47,24 @@ public class RewardsService implements IRewardsService {
 		UUID uid = user.getUserId();
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		List<UserReward> userRewardsToAdd = new ArrayList<>();
+		HashSet<UserReward> userRewardsToAdd = new HashSet<UserReward>();
 
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
 /*
 				userRewardsToAdd.add(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, uid)));
 */
-
 				// stocker user.getUserRewards en variable pour la réutiliser à chaque itération ?
 				if (isVisitedLocationInAttractionProximity(visitedLocation, attraction)) {
+					UserReward userReward = new UserReward(visitedLocation, attraction);
 					CompletableFuture.supplyAsync(() -> {
 						return getRewardPoints(attraction, uid);
-					}).thenAcceptAsync((p) -> {
+					}).thenAccept((p) -> {
+						userReward.setRewardPoints(p);
 //						user.addUserReward(new UserReward(visitedLocation, attraction, p));
-						userRewardsToAdd.add(new UserReward(visitedLocation, attraction, p));
+//						userRewardsToAdd.add(new UserReward(visitedLocation, attraction, p));
 					});
+					userRewardsToAdd.add(userReward);
 				}
 			}
 		}
