@@ -1,5 +1,6 @@
 package tourGuide.service;
 
+import tourGuide.service.ITourGuideService;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 

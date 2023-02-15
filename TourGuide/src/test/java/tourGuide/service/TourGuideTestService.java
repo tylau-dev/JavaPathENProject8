@@ -12,13 +12,21 @@ import tourGuide.user.User;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class TourGuideTestService extends TourGuideService implements ITourGuideTestService {
     private Logger logger = LoggerFactory.getLogger(TourGuideTestService.class);
     private final Tracker tracker;
     boolean testMode = true;
+    private final Map<String, User> internalUserMap = new HashMap<>();
 
+    // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
+    public static final String tripPricerApiKey = "test-server-api-key";
+
+    public List<User> getAllUsers() {
+        return internalUserMap.values().stream().collect(Collectors.toList());
+    }
     public TourGuideTestService(GpsUtil gpsUtil, IRewardsService rewardsService) {
         super(gpsUtil, rewardsService);
         if(testMode) {
@@ -42,9 +50,7 @@ public class TourGuideTestService extends TourGuideService implements ITourGuide
             }
         });
     }
-    public static final String tripPricerApiKey = "test-server-api-key";
-    // Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-    private final Map<String, User> internalUserMap = new HashMap<>();
+
     public void initializeInternalUsers() {
         IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
             String userName = "internalUser" + i;

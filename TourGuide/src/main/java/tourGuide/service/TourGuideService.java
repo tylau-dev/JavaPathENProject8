@@ -2,13 +2,8 @@ package tourGuide.service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -33,17 +28,21 @@ public class TourGuideService implements ITourGuideService{
 	private final GpsUtil gpsUtil;
 	private final IRewardsService rewardsService;
 	private final TripPricer tripPricer = new TripPricer();
+	private final Map<String, User> internalUserMap = new HashMap<>();
+
+	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
+	private static final String tripPricerApiKey = "test-server-api-key";
 
 	public TourGuideService(GpsUtil gpsUtil, IRewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
 	}
 	
-	public List<UserReward> getUserRewards(User user) {
+	public Collection<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
 	
-	public VisitedLocation getUserLocation(User user) {
+	public VisitedLocation getUserLocation(User user) throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLastVisitedLocation() :
 			trackUserLocation(user);
@@ -72,7 +71,7 @@ public class TourGuideService implements ITourGuideService{
 		return providers;
 	}
 	
-	public VisitedLocation trackUserLocation(User user) {
+	public VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
 		user.addToVisitedLocations(visitedLocation);
 		rewardsService.calculateRewards(user);
@@ -89,58 +88,5 @@ public class TourGuideService implements ITourGuideService{
 		
 		return nearbyAttractions;
 	}
-	/**********************************************************************************
-	 *
-	 * Methods Below: For Internal Testing
-	 *
-	 **********************************************************************************/
 
-
-//	private void addShutDownHook() {
-//		Runtime.getRuntime().addShutdownHook(new Thread() {
-//		      public void run() {
-//		        tracker.stopTracking();
-//		      }
-//		    });
-//	}
-	
-	private static final String tripPricerApiKey = "test-server-api-key";
-	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
-	private final Map<String, User> internalUserMap = new HashMap<>();
-	private void initializeInternalUsers() {
-		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
-			String userName = "internalUser" + i;
-			String phone = "000";
-			String email = userName + "@tourGuide.com";
-			User user = new User(UUID.randomUUID(), userName, phone, email);
-			generateUserLocationHistory(user);
-			
-			internalUserMap.put(userName, user);
-		});
-		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
-	}
-	
-	private void generateUserLocationHistory(User user) {
-		IntStream.range(0, 3).forEach(i-> {
-			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
-		});
-	}
-	
-	private double generateRandomLongitude() {
-		double leftLimit = -180;
-	    double rightLimit = 180;
-	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
-	}
-	
-	private double generateRandomLatitude() {
-		double leftLimit = -85.05112878;
-	    double rightLimit = 85.05112878;
-	    return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
-	}
-	
-	private Date getRandomTime() {
-		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
-	    return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
-	}
-	
 }

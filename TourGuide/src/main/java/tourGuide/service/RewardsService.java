@@ -1,6 +1,10 @@
 package tourGuide.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import org.springframework.stereotype.Service;
 
@@ -38,37 +42,49 @@ public class RewardsService implements IRewardsService {
 		proximityBuffer = defaultProximityBuffer;
 	}
 	
-	public void calculateRewards(User user) {
+	public void calculateRewards(User user) throws ExecutionException, InterruptedException {
+		UUID uid = user.getUserId();
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
+		List<UserReward> userRewardsToAdd = new ArrayList<>();
 
-		//@todo double for o(n²)
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
-				//il fait quoi ce filtre sur lui même ?
+/*
+				userRewardsToAdd.add(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, uid)));
+*/
+
 				// stocker user.getUserRewards en variable pour la réutiliser à chaque itération ?
-				if(user.getUserRewards().stream().filter(r -> r.attraction.attractionName.equals(attraction.attractionName)).count() == 0) {
-					if(isVisitedLocationWithAttractionProximity(visitedLocation, attraction)) {
-						user.addUserReward(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, user)));
-					}
+				if (isVisitedLocationInAttractionProximity(visitedLocation, attraction)) {
+					CompletableFuture.supplyAsync(() -> {
+						return getRewardPoints(attraction, uid);
+					}).thenAcceptAsync((p) -> {
+//						user.addUserReward(new UserReward(visitedLocation, attraction, p));
+						userRewardsToAdd.add(new UserReward(visitedLocation, attraction, p));
+					});
 				}
 			}
 		}
+
+		for (UserReward userReward: userRewardsToAdd) {
+			user.addUserReward(userReward);
+		}
+
+
 	}
 	
 	public boolean isLocationWithinAttractionProximity(Attraction attraction, Location location) {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
 	}
 
-	// à ajouter à l'interface ?
-	private boolean isVisitedLocationWithAttractionProximity(VisitedLocation visitedLocation, Attraction attraction) {
+	private boolean isVisitedLocationInAttractionProximity(VisitedLocation visitedLocation, Attraction attraction) {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
-	public int getRewardPoints(Attraction attraction, User user) {
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, user.getUserId());
+	public int getRewardPoints(Attraction attraction, UUID userId) {
+		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, userId);
 	}
-	
+
 	public double getDistance(Location loc1, Location loc2) {
         double lat1 = Math.toRadians(loc1.latitude);
         double lon1 = Math.toRadians(loc1.longitude);

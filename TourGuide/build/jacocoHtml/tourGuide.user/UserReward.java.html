@@ -13,17 +13,29 @@ public class UserReward {
 <span class="fc" id="L13">		this.rewardPoints = rewardPoints;</span>
 <span class="fc" id="L14">	}</span>
 	
-<span class="nc" id="L16">	public UserReward(VisitedLocation visitedLocation, Attraction attraction) {</span>
-<span class="nc" id="L17">		this.visitedLocation = visitedLocation;</span>
-<span class="nc" id="L18">		this.attraction = attraction;</span>
-<span class="nc" id="L19">	}</span>
+<span class="fc" id="L16">	public UserReward(VisitedLocation visitedLocation, Attraction attraction) {</span>
+<span class="fc" id="L17">		this.visitedLocation = visitedLocation;</span>
+<span class="fc" id="L18">		this.attraction = attraction;</span>
+<span class="fc" id="L19">	}</span>
+
+	public VisitedLocation getVisitedLocation() {
+<span class="nc" id="L22">		return visitedLocation;</span>
+	}
+
+	public Attraction getAttraction() {
+<span class="nc" id="L26">		return attraction;</span>
+	}
+
+	public String getAttractionName() {
+<span class="fc" id="L30">		return attraction.attractionName;</span>
+	}
 
 	public void setRewardPoints(int rewardPoints) {
-<span class="nc" id="L22">		this.rewardPoints = rewardPoints;</span>
-<span class="nc" id="L23">	}</span>
+<span class="nc" id="L34">		this.rewardPoints = rewardPoints;</span>
+<span class="nc" id="L35">	}</span>
 	
 	public int getRewardPoints() {
-<span class="nc" id="L26">		return rewardPoints;</span>
+<span class="nc" id="L38">		return rewardPoints;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>
