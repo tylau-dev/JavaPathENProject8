@@ -1,8 +1,11 @@
 package tourGuide;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import gpsUtil.location.Attraction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,10 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import tourGuide.helper.DistanceHelper;
+import tourGuide.response.NearbyAttraction;
+import tourGuide.response.NearbyAttractionReponse;
 import tourGuide.service.ITourGuideService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
+import tourGuide.user.UserReward;
 import tripPricer.Provider;
+
+import static tourGuide.helper.DistanceHelper.getDistance;
 
 @RestController
 public class TourGuideController {
@@ -43,10 +52,23 @@ public class TourGuideController {
     // The distance in miles between the user's location and each of the attractions.
     // The reward points for visiting each Attraction.
     //    Note: Attraction reward points can be gathered from RewardsCentral
+    //
+
     @RequestMapping("/getNearbyAttractions")
     public String getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
-        VisitedLocation visitedLocation = tourGuideService.getUserLocation(getUser(userName));
-        return JsonStream.serialize(tourGuideService.getNearbyAttractions(visitedLocation));
+        User currentUser = getUser(userName);
+        VisitedLocation visitedLocation = tourGuideService.getUserLocation(currentUser);
+        List<Attraction> closeAttractions = tourGuideService.getNearbyAttractions(visitedLocation);
+        Collection<UserReward> userRewards = currentUser.getUserRewards();
+
+        NearbyAttractionReponse result = new NearbyAttractionReponse(visitedLocation.location.latitude, visitedLocation.location.longitude, new ArrayList<NearbyAttraction>());
+
+        for (Attraction attraction : closeAttractions) {
+            // @todo filter rewardPoints
+            result.addNearbyAttraction(new NearbyAttraction(attraction.attractionName, attraction.longitude, attraction.latitude, getDistance(visitedLocation.location, attraction), 0);
+        }
+
+        return JsonStream.serialize(result.filterTopFiveAttraction());
     }
 
     @RequestMapping("/getRewards")

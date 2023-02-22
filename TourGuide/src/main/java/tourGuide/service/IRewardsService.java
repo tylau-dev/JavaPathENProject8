@@ -14,5 +14,4 @@ public interface IRewardsService {
     void calculateRewards(User user) throws ExecutionException, InterruptedException;
     boolean isLocationWithinAttractionProximity(Attraction attraction, Location location);
     int getRewardPoints(Attraction attraction, UUID userId);
-    double getDistance(Location loc1, Location loc2);
 }
