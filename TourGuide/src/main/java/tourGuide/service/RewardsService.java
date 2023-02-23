@@ -47,7 +47,8 @@ public class RewardsService implements IRewardsService {
 		UUID uid = user.getUserId();
 		List<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		HashSet<UserReward> userRewardsToAdd = new HashSet<UserReward>();
+		final HashSet<UserReward> userRewardsToAdd = new HashSet<UserReward>();
+		int test = 1111;
 
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
