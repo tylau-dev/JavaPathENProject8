@@ -1,31 +1,19 @@
 package tourGuide.response;
 
-public class NearbyAttraction {
-    private final String name;
-    private final Double longitude;
-    private final Double latitude;
-    private final Double distance;
-    private final int rewardPoints;
+public class NearbyAttraction extends Coordinate {
+    private String name;
+    private Double distance;
+    private int rewardPoints;
 
-    public NearbyAttraction(String name, double longitude, double latitude, double distance, int rewardPoints) {
+    public NearbyAttraction(String name, double distance, int rewardPoints, Double latitude, Double longitude) {
+        super(latitude, longitude);
         this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
         this.distance = distance;
         this.rewardPoints = rewardPoints;
     }
 
     public String getName() {
         return this.name;
-    }
-
-
-    public Double getLongitude() {
-        return this.longitude;
-    }
-
-    public Double getLatitude() {
-        return this.latitude;
     }
 
     public Double getDistance() {
@@ -36,4 +24,15 @@ public class NearbyAttraction {
         return this.rewardPoints;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
+    }
+
+    public void setRewardPoints(int rewardPoints) {
+        this.rewardPoints = rewardPoints;
+    }
 }

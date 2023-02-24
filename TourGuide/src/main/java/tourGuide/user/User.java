@@ -94,5 +94,9 @@ public class User {
 	public List<Provider> getTripDeals() {
 		return tripDeals;
 	}
+
+	public VisitedLocation getLatestVisitedLocation() {
+		return visitedLocations.stream().max(Comparator.comparing(v -> v.timeVisited)).get();
+	}
 	
 }

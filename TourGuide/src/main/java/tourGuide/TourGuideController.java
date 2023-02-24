@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.jsoniter.output.JsonStream;
 
 import gpsUtil.location.VisitedLocation;
+import rewardCentral.RewardCentral;
+import tourGuide.response.Coordinate;
 import tourGuide.response.NearbyAttraction;
 import tourGuide.response.NearbyAttractionResponse;
+import tourGuide.response.UserCurrentLocation;
 import tourGuide.service.ITourGuideService;
 import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
@@ -29,6 +32,9 @@ public class TourGuideController {
 
     @Autowired
     ITourGuideService tourGuideService;
+
+    @Autowired
+    RewardCentral rewardCentral;
 
     @RequestMapping("/")
     public String index() {
@@ -50,7 +56,7 @@ public class TourGuideController {
     // The user's location lat/long,
     // The distance in miles between the user's location and each of the attractions.
     // The reward points for visiting each Attraction.
-    //    Note: Attraction reward points can be gathered from RewardsCentral
+    // Note: Attraction reward points can be gathered from RewardsCentral
     @RequestMapping("/getNearbyAttractions")
     public String getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
         User currentUser = getUser(userName);
@@ -61,11 +67,11 @@ public class TourGuideController {
         NearbyAttractionResponse result = new NearbyAttractionResponse(visitedLocation.location.latitude, visitedLocation.location.longitude, new ArrayList<NearbyAttraction>());
 
         for (Attraction attraction : closeAttractions) {
-            // @todo filter rewardPoints
-            result.addNearbyAttraction(new NearbyAttraction(attraction.attractionName, attraction.longitude, attraction.latitude, getDistance(visitedLocation.location, attraction), 0));
+            result.addNearbyAttraction(new NearbyAttraction(attraction.attractionName, getDistance(visitedLocation.location, attraction), rewardCentral.getAttractionRewardPoints(attraction.attractionId, currentUser.getUserId()), attraction.longitude, attraction.latitude));
         }
 
-        return JsonStream.serialize(result.filterTopFiveAttraction());    }
+        return JsonStream.serialize(result.filterTopFiveAttraction());
+    }
 
     @RequestMapping("/getRewards")
     public String getRewards(@RequestParam String userName) {
@@ -74,17 +80,14 @@ public class TourGuideController {
 
     @RequestMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
-        // TODO: Get a list of every user's most recent location as JSON
-        //- Note: does not use gpsUtil to query for their current location,
-        //        but rather gathers the user's current location from their stored location history.
-        //
-        // Return object should be the just a JSON mapping of userId to Locations similar to:
-        //     {
-        //        "019b04a9-067a-4c76-8817-ee75088c3822": {"longitude":-48.188821,"latitude":74.84371}
-        //        ...
-        //     }
+        List<User> allUser = tourGuideService.getAllUsers();
+        List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
 
-        return JsonStream.serialize("");
+        for (User user : allUser) {
+            VisitedLocation latestVisitedLocation = user.getLastVisitedLocation();
+            result.add(new UserCurrentLocation(user.getUserId(),  new Coordinate(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
+        }
+        return JsonStream.serialize(result);
     }
 
     @RequestMapping("/getTripDeals")

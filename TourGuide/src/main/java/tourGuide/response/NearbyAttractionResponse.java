@@ -7,15 +7,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NearbyAttractionResponse
+public class NearbyAttractionResponse extends Coordinate
 {
-    private final Double userLatitude;
-    private final Double userLongitude;
     private List<NearbyAttraction> nearbyAttractions;
 
     public NearbyAttractionResponse(double userLatitude, double userLongitude, List<NearbyAttraction> nearbyAttractions) {
-        this.userLatitude = userLatitude;
-        this.userLongitude = userLongitude;
+        super(userLatitude, userLongitude);
         this.nearbyAttractions = nearbyAttractions;
     }
 
@@ -25,5 +22,13 @@ public class NearbyAttractionResponse
 
     public List<NearbyAttraction> filterTopFiveAttraction() {
         return this.nearbyAttractions.stream().sorted(Comparator.comparing(NearbyAttraction::getDistance)).limit(5).collect(Collectors.toList());
+    }
+
+    public List<NearbyAttraction> getNearbyAttractions() {
+        return nearbyAttractions;
+    }
+
+    public void setNearbyAttractions(List<NearbyAttraction> nearbyAttractions) {
+        this.nearbyAttractions = nearbyAttractions;
     }
 }
