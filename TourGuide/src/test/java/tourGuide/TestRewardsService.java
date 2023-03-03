@@ -13,9 +13,9 @@ import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.service.ITourGuideTestService;
+import tourGuide.service.ITourGuideService;
 import tourGuide.service.RewardsService;
-import tourGuide.service.TourGuideTestService;
+import tourGuide.service.TourGuideService;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 
@@ -31,7 +31,7 @@ public class TestRewardsService {
 		RewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
 
 		InternalTestHelper.setInternalUserNumber(0);
-		ITourGuideTestService tourGuideService = new TourGuideTestService(gpsUtil, rewardsService);
+		ITourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		Attraction attraction = gpsUtil.getAttractions().get(0);
@@ -57,7 +57,7 @@ public class TestRewardsService {
 		rewardsService.setProximityBuffer(Integer.MAX_VALUE);
 
 		InternalTestHelper.setInternalUserNumber(1);
-		ITourGuideTestService tourGuideService = new TourGuideTestService(gpsUtil, rewardsService);
+		ITourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		List<User> userList = tourGuideService.getAllUsers();
 		User testUser = userList.get(0);

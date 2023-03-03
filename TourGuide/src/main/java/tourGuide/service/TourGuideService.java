@@ -43,6 +43,15 @@ public class TourGuideService implements ITourGuideService{
 	public TourGuideService(GpsUtil gpsUtil, IRewardsService rewardsService) {
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
+
+		if(testMode) {
+			logger.info("TestMode enabled");
+			logger.debug("Initializing users");
+			initializeInternalUsers();
+			logger.debug("Finished initializing users");
+		}
+		tracker = new Tracker(this);
+		addShutDownHook();
 	}
 
 
@@ -122,5 +131,62 @@ public class TourGuideService implements ITourGuideService{
 			result.add(new UserCurrentLocation(user.getUserId(),  new Coordinate(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
 		}
 		return result;
+	}
+
+
+	/*
+		Test Methods
+	 */
+	private final Tracker tracker;
+	boolean testMode = true;
+
+	// Database connection will be used for external users, but for testing purposes internal users are provided and stored in memory
+
+	public Tracker getTracker() {
+		return tracker;
+	}
+
+	public void addShutDownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				tracker.stopTracking();
+			}
+		});
+	}
+
+	public void initializeInternalUsers() {
+		IntStream.range(0, InternalTestHelper.getInternalUserNumber()).forEach(i -> {
+			String userName = "internalUser" + i;
+			String phone = "000";
+			String email = userName + "@tourGuide.com";
+			User user = new User(UUID.randomUUID(), userName, phone, email);
+			generateUserLocationHistory(user);
+
+			internalUserMap.put(userName, user);
+		});
+		logger.debug("Created " + InternalTestHelper.getInternalUserNumber() + " internal test users.");
+	}
+
+	public void generateUserLocationHistory(User user) {
+		IntStream.range(0, 3).forEach(i-> {
+			user.addToVisitedLocations(new VisitedLocation(user.getUserId(), new Location(generateRandomLatitude(), generateRandomLongitude()), getRandomTime()));
+		});
+	}
+
+	public double generateRandomLongitude() {
+		double leftLimit = -180;
+		double rightLimit = 180;
+		return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
+	}
+
+	public double generateRandomLatitude() {
+		double leftLimit = -85.05112878;
+		double rightLimit = 85.05112878;
+		return leftLimit + new Random().nextDouble() * (rightLimit - leftLimit);
+	}
+
+	public Date getRandomTime() {
+		LocalDateTime localDateTime = LocalDateTime.now().minusDays(new Random().nextInt(30));
+		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
 }
