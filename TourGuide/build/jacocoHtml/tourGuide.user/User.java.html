@@ -84,7 +84,7 @@ public class User {
 <span class="nc" id="L84">	}</span>
 
 	public VisitedLocation getLastVisitedLocation() {
-<span class="nc" id="L87">		return visitedLocations.get(visitedLocations.size() - 1);</span>
+<span class="fc" id="L87">		return visitedLocations.get(visitedLocations.size() - 1);</span>
 	}
 	
 	public void setTripDeals(List&lt;Provider&gt; tripDeals) {
@@ -93,6 +93,10 @@ public class User {
 	
 	public List&lt;Provider&gt; getTripDeals() {
 <span class="nc" id="L95">		return tripDeals;</span>
+	}
+
+	public VisitedLocation getLatestVisitedLocation() {
+<span class="nc" id="L99">		return visitedLocations.stream().max(Comparator.comparing(v -&gt; v.timeVisited)).get();</span>
 	}
 	
 }

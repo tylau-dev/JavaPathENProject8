@@ -1,19 +1,25 @@
 package tourGuide.service;
 
 import gpsUtil.GpsUtil;
+import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.response.NearbyAttraction;
+import tourGuide.response.NearbyAttractionResponse;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static tourGuide.helper.DistanceHelper.getDistance;
 
 public class TourGuideTestService extends TourGuideService implements ITourGuideTestService {
     private Logger logger = LoggerFactory.getLogger(TourGuideTestService.class);
@@ -36,6 +42,7 @@ public class TourGuideTestService extends TourGuideService implements ITourGuide
     public List<User> getAllUsers() {
         return new ArrayList<>(internalUserMap.values());
     }
+
     public TourGuideTestService(GpsUtil gpsUtil, IRewardsService rewardsService) {
         super(gpsUtil, rewardsService);
         if(testMode) {

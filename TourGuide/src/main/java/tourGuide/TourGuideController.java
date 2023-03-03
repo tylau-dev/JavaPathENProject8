@@ -48,29 +48,9 @@ public class TourGuideController {
         return JsonStream.serialize(visitedLocation.location);
     }
 
-    //  TODO: Change this method to no longer return a List of Attractions.
-    //  Instead: Get the closest five tourist attractions to the user - no matter how far away they are.
-    //  Return a new JSON object that contains:
-    // Name of Tourist attraction,
-    // Tourist attractions lat/long,
-    // The user's location lat/long,
-    // The distance in miles between the user's location and each of the attractions.
-    // The reward points for visiting each Attraction.
-    // Note: Attraction reward points can be gathered from RewardsCentral
     @RequestMapping("/getNearbyAttractions")
     public String getNearbyAttractions(@RequestParam String userName) throws ExecutionException, InterruptedException {
-        User currentUser = getUser(userName);
-        VisitedLocation visitedLocation = tourGuideService.getUserLocation(currentUser);
-        List<Attraction> closeAttractions = tourGuideService.getNearbyAttractions(visitedLocation);
-        Collection<UserReward> userRewards = currentUser.getUserRewards();
-
-        NearbyAttractionResponse result = new NearbyAttractionResponse(visitedLocation.location.latitude, visitedLocation.location.longitude, new ArrayList<NearbyAttraction>());
-
-        for (Attraction attraction : closeAttractions) {
-            result.addNearbyAttraction(new NearbyAttraction(attraction.attractionName, getDistance(visitedLocation.location, attraction), rewardCentral.getAttractionRewardPoints(attraction.attractionId, currentUser.getUserId()), attraction.longitude, attraction.latitude));
-        }
-
-        return JsonStream.serialize(result.filterTopFiveAttraction());
+        return JsonStream.serialize(tourGuideService.getFormatTopFiveNearbyAttractions(getUser(userName)));
     }
 
     @RequestMapping("/getRewards")
@@ -80,14 +60,7 @@ public class TourGuideController {
 
     @RequestMapping("/getAllCurrentLocations")
     public String getAllCurrentLocations() {
-        List<User> allUser = tourGuideService.getAllUsers();
-        List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
-
-        for (User user : allUser) {
-            VisitedLocation latestVisitedLocation = user.getLastVisitedLocation();
-            result.add(new UserCurrentLocation(user.getUserId(),  new Coordinate(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
-        }
-        return JsonStream.serialize(result);
+        return JsonStream.serialize(tourGuideService.getAllUserCurrentLocation());
     }
 
     @RequestMapping("/getTripDeals")

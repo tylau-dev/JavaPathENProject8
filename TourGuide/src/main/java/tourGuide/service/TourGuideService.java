@@ -15,12 +15,19 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
 import gpsUtil.location.VisitedLocation;
+import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
+import tourGuide.response.Coordinate;
+import tourGuide.response.NearbyAttraction;
+import tourGuide.response.NearbyAttractionResponse;
+import tourGuide.response.UserCurrentLocation;
 import tourGuide.tracker.Tracker;
 import tourGuide.user.User;
 import tourGuide.user.UserReward;
 import tripPricer.Provider;
 import tripPricer.TripPricer;
+
+import static tourGuide.helper.DistanceHelper.getDistance;
 
 @Service
 public class TourGuideService implements ITourGuideService{
@@ -37,7 +44,8 @@ public class TourGuideService implements ITourGuideService{
 		this.gpsUtil = gpsUtil;
 		this.rewardsService = rewardsService;
 	}
-	
+
+
 	public Collection<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
@@ -62,7 +70,8 @@ public class TourGuideService implements ITourGuideService{
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
-	
+
+	//@todo revoir l'implémentation de trippricer
 	public List<Provider> getTripDeals(User user) {
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
@@ -89,4 +98,29 @@ public class TourGuideService implements ITourGuideService{
 		return nearbyAttractions;
 	}
 
+	public NearbyAttractionResponse getFormatTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException {
+		VisitedLocation visitedLocation = getUserLocation(user);
+		List<Attraction> closeAttractions = getNearbyAttractions(visitedLocation);
+
+		NearbyAttractionResponse result = new NearbyAttractionResponse(visitedLocation.location.latitude, visitedLocation.location.longitude, new ArrayList<NearbyAttraction>());
+
+		for (Attraction attraction : closeAttractions) {
+			result.addNearbyAttraction(new NearbyAttraction(attraction.attractionName, getDistance(visitedLocation.location, attraction), rewardsService.getRewardPoints(attraction, user.getUserId()), attraction.longitude, attraction.latitude));
+		}
+
+		result.filterTopFiveAttraction();
+
+		return result;
+	}
+
+	public List<UserCurrentLocation> getAllUserCurrentLocation() {
+		List<User> allUser = getAllUsers();
+		List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
+
+		for (User user : allUser) {
+			VisitedLocation latestVisitedLocation = user.getLastVisitedLocation();
+			result.add(new UserCurrentLocation(user.getUserId(),  new Coordinate(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
+		}
+		return result;
+	}
 }
