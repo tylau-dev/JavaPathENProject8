@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="tourGuide.TestPerformance" tests="2" skipped="2" failures="0" errors="0" timestamp="2023-02-15T14:47:37" hostname="DESKTOP-1E3B440" time="0.001">
+<testsuite name="tourGuide.TestPerformance" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-03-03T15:16:17" hostname="DESKTOP-1E3B440" time="1060.933">
   <properties/>
-  <testcase name="highVolumeTrackLocation" classname="tourGuide.TestPerformance" time="0.0">
-    <skipped/>
-  </testcase>
-  <testcase name="highVolumeGetRewards" classname="tourGuide.TestPerformance" time="0.0">
-    <skipped/>
-  </testcase>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
+  <testcase name="highVolumeGetRewards" classname="tourGuide.TestPerformance" time="1060.933"/>
+  <system-out><![CDATA[16:16:17.620 [Test worker] INFO tourGuide.service.TourGuideService - TestMode enabled
+16:16:17.627 [Test worker] DEBUG tourGuide.service.TourGuideService - Initializing users
+16:16:18.428 [Test worker] DEBUG tourGuide.service.TourGuideService - Created 100000 internal test users.
+16:16:18.428 [Test worker] DEBUG tourGuide.service.TourGuideService - Finished initializing users
+16:16:18.444 [pool-1-thread-1] DEBUG tourGuide.tracker.Tracker - Begin Tracker. Tracking 100000 users.
+highVolumeGetRewards: Time Elapsed: 1060 seconds.
+]]></system-out>
+  <system-err><![CDATA[Mar 03, 2023 4:16:17 PM org.javamoney.moneta.DefaultMonetaryContextFactory createMonetaryContextNonNullConfig
+INFO: Using custom MathContext: precision=256, roundingMode=HALF_EVEN
+]]></system-err>
 </testsuite>

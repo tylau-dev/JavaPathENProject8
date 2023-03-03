@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NearbyAttractionResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TourGuide</a> &gt; <a href="index.source.html" class="el_package">tourGuide.response</a> &gt; <span class="el_source">NearbyAttractionResponse.java</span></div><h1>NearbyAttractionResponse.java</h1><pre class="source lang-java linenums">package tourGuide.response;
+
+import gpsUtil.location.VisitedLocation;
+import tourGuide.response.NearbyAttraction;
+
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class NearbyAttractionResponse extends Coordinate
+{
+    private List&lt;NearbyAttraction&gt; nearbyAttractions;
+
+    public NearbyAttractionResponse(double userLatitude, double userLongitude, List&lt;NearbyAttraction&gt; nearbyAttractions) {
+<span class="fc" id="L15">        super(userLatitude, userLongitude);</span>
+<span class="fc" id="L16">        this.nearbyAttractions = nearbyAttractions;</span>
+<span class="fc" id="L17">    }</span>
+
+    public void addNearbyAttraction(NearbyAttraction nearbyAttraction) {
+<span class="fc" id="L20">        this.nearbyAttractions.add(nearbyAttraction);</span>
+<span class="fc" id="L21">    }</span>
+
+    public List&lt;NearbyAttraction&gt; filterTopFiveAttraction() {
+<span class="fc" id="L24">        return this.nearbyAttractions.stream().sorted(Comparator.comparing(NearbyAttraction::getDistance)).limit(5).collect(Collectors.toList());</span>
+    }
+
+    public List&lt;NearbyAttraction&gt; getNearbyAttractions() {
+<span class="fc" id="L28">        return nearbyAttractions;</span>
+    }
+
+    public void setNearbyAttractions(List&lt;NearbyAttraction&gt; nearbyAttractions) {
+<span class="nc" id="L32">        this.nearbyAttractions = nearbyAttractions;</span>
+<span class="nc" id="L33">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.4.201905082037</span></div></body></html>

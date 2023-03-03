@@ -76,7 +76,7 @@ public class User {
 	}
 	
 	public UserPreferences getUserPreferences() {
-<span class="nc" id="L79">		return userPreferences;</span>
+<span class="fc" id="L79">		return userPreferences;</span>
 	}
 	
 	public void setUserPreferences(UserPreferences userPreferences) {
@@ -84,15 +84,19 @@ public class User {
 <span class="nc" id="L84">	}</span>
 
 	public VisitedLocation getLastVisitedLocation() {
-<span class="nc" id="L87">		return visitedLocations.get(visitedLocations.size() - 1);</span>
+<span class="fc" id="L87">		return visitedLocations.get(visitedLocations.size() - 1);</span>
 	}
 	
 	public void setTripDeals(List&lt;Provider&gt; tripDeals) {
-<span class="nc" id="L91">		this.tripDeals = tripDeals;</span>
-<span class="nc" id="L92">	}</span>
+<span class="fc" id="L91">		this.tripDeals = tripDeals;</span>
+<span class="fc" id="L92">	}</span>
 	
 	public List&lt;Provider&gt; getTripDeals() {
 <span class="nc" id="L95">		return tripDeals;</span>
+	}
+
+	public VisitedLocation getLatestVisitedLocation() {
+<span class="nc" id="L99">		return visitedLocations.stream().max(Comparator.comparing(v -&gt; v.timeVisited)).get();</span>
 	}
 	
 }
