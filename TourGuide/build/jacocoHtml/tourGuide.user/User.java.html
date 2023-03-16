@@ -12,7 +12,7 @@ public class User {
 	private String phoneNumber;
 	private String emailAddress;
 	private Date latestLocationTimestamp;
-<span class="fc" id="L15">	private List&lt;VisitedLocation&gt; visitedLocations = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L15">	private Map&lt;String, VisitedLocation&gt; visitedLocations = new ConcurrentHashMap&lt;&gt;();</span>
 <span class="fc" id="L16">	private Map&lt;String, UserReward&gt; userRewards = new ConcurrentHashMap&lt;&gt;();</span>
 <span class="fc" id="L17">	private UserPreferences userPreferences = new UserPreferences();</span>
 <span class="fc" id="L18">	private List&lt;Provider&gt; tripDeals = new ArrayList&lt;&gt;();</span>
@@ -28,7 +28,7 @@ public class User {
 	}
 	
 	public String getUserName() {
-<span class="fc" id="L31">		return userName;</span>
+<span class="nc" id="L31">		return userName;</span>
 	}
 	
 	public void setPhoneNumber(String phoneNumber) {
@@ -56,47 +56,48 @@ public class User {
 	}
 	
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
-<span class="fc" id="L59">		visitedLocations.add(visitedLocation);</span>
-<span class="fc" id="L60">	}</span>
-	
-	public List&lt;VisitedLocation&gt; getVisitedLocations() {
-<span class="fc" id="L63">		return visitedLocations;</span>
+<span class="fc" id="L59">		String locationStringified = String.valueOf((visitedLocation.location.latitude + visitedLocation.location.longitude));</span>
+<span class="fc" id="L60">		visitedLocations.putIfAbsent(locationStringified, visitedLocation);</span>
+<span class="fc" id="L61">	}</span>
+
+	public Collection&lt;VisitedLocation&gt; getVisitedLocations() {
+<span class="fc" id="L64">		return visitedLocations.values();</span>
 	}
 	
 	public void clearVisitedLocations() {
-<span class="nc" id="L67">		visitedLocations.clear();</span>
-<span class="nc" id="L68">	}</span>
+<span class="nc" id="L68">		visitedLocations.clear();</span>
+<span class="nc" id="L69">	}</span>
 	
 	public synchronized void addUserReward(UserReward userReward) {
-<span class="fc" id="L71">		userRewards.putIfAbsent(userReward.getAttractionName(), userReward);</span>
-<span class="fc" id="L72">	}</span>
+<span class="fc" id="L72">		userRewards.putIfAbsent(userReward.getAttractionName(), userReward);</span>
+<span class="fc" id="L73">	}</span>
 	
 	public Collection&lt;UserReward&gt; getUserRewards() {
-<span class="fc" id="L75">		return userRewards.values();</span>
+<span class="nc" id="L76">		return userRewards.values();</span>
 	}
 	
 	public UserPreferences getUserPreferences() {
-<span class="fc" id="L79">		return userPreferences;</span>
+<span class="nc" id="L80">		return userPreferences;</span>
 	}
 	
 	public void setUserPreferences(UserPreferences userPreferences) {
-<span class="nc" id="L83">		this.userPreferences = userPreferences;</span>
-<span class="nc" id="L84">	}</span>
+<span class="nc" id="L84">		this.userPreferences = userPreferences;</span>
+<span class="nc" id="L85">	}</span>
 
 	public VisitedLocation getLastVisitedLocation() {
-<span class="fc" id="L87">		return visitedLocations.get(visitedLocations.size() - 1);</span>
+<span class="nc" id="L88">		return visitedLocations.get(visitedLocations.size() - 1);</span>
 	}
 	
 	public void setTripDeals(List&lt;Provider&gt; tripDeals) {
-<span class="fc" id="L91">		this.tripDeals = tripDeals;</span>
-<span class="fc" id="L92">	}</span>
+<span class="nc" id="L92">		this.tripDeals = tripDeals;</span>
+<span class="nc" id="L93">	}</span>
 	
 	public List&lt;Provider&gt; getTripDeals() {
-<span class="nc" id="L95">		return tripDeals;</span>
+<span class="nc" id="L96">		return tripDeals;</span>
 	}
 
 	public VisitedLocation getLatestVisitedLocation() {
-<span class="nc" id="L99">		return visitedLocations.stream().max(Comparator.comparing(v -&gt; v.timeVisited)).get();</span>
+<span class="nc" id="L100">		return visitedLocations.values().stream().max(Comparator.comparing(v -&gt; v.timeVisited)).get();</span>
 	}
 	
 }

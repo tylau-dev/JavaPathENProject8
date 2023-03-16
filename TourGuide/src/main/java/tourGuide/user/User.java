@@ -12,7 +12,7 @@ public class User {
 	private String phoneNumber;
 	private String emailAddress;
 	private Date latestLocationTimestamp;
-	private List<VisitedLocation> visitedLocations = new ArrayList<>();
+	private Map<String, VisitedLocation> visitedLocations = new ConcurrentHashMap<>();
 	private Map<String, UserReward> userRewards = new ConcurrentHashMap<>();
 	private UserPreferences userPreferences = new UserPreferences();
 	private List<Provider> tripDeals = new ArrayList<>();
@@ -56,11 +56,12 @@ public class User {
 	}
 	
 	public void addToVisitedLocations(VisitedLocation visitedLocation) {
-		visitedLocations.add(visitedLocation);
+		String locationStringified = String.valueOf((visitedLocation.location.latitude + visitedLocation.location.longitude));
+		visitedLocations.putIfAbsent(locationStringified, visitedLocation);
 	}
-	
-	public List<VisitedLocation> getVisitedLocations() {
-		return visitedLocations;
+
+	public Collection<VisitedLocation> getVisitedLocations() {
+		return visitedLocations.values();
 	}
 	
 	public void clearVisitedLocations() {
@@ -96,7 +97,7 @@ public class User {
 	}
 
 	public VisitedLocation getLatestVisitedLocation() {
-		return visitedLocations.stream().max(Comparator.comparing(v -> v.timeVisited)).get();
+		return visitedLocations.values().stream().max(Comparator.comparing(v -> v.timeVisited)).get();
 	}
 	
 }

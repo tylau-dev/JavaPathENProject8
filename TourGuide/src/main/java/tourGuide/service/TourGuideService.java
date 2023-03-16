@@ -3,6 +3,7 @@ package tourGuide.service;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -90,10 +91,19 @@ public class TourGuideService implements ITourGuideService{
 	}
 	
 	public VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
-		return visitedLocation;
+		return CompletableFuture.supplyAsync(() -> {
+			return gpsUtil.getUserLocation(user.getUserId());
+		}).thenApply((p) -> {
+			user.addToVisitedLocations(p);
+			try {
+				rewardsService.calculateRewards(user);
+			} catch (ExecutionException e) {
+				throw new RuntimeException(e);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+			return p;
+		}).join();
 	}
 
 	public List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation) {
@@ -126,10 +136,11 @@ public class TourGuideService implements ITourGuideService{
 		List<User> allUser = getAllUsers();
 		List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
 
-		for (User user : allUser) {
+		allUser.parallelStream().forEach(user -> {
 			VisitedLocation latestVisitedLocation = user.getLastVisitedLocation();
 			result.add(new UserCurrentLocation(user.getUserId(),  new Coordinate(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
-		}
+		});
+
 		return result;
 	}
 

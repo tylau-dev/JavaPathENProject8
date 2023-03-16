@@ -46,23 +46,27 @@ public class TestPerformance {
         Locale.setDefault(Locale.US);
     }
 
-    @Ignore
     @Test
     public void highVolumeTrackLocation() throws ExecutionException, InterruptedException {
         GpsUtil gpsUtil = new GpsUtil();
         IRewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(100);
+        InternalTestHelper.setInternalUserNumber(100000);
         ITourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
         List<User> allUsers = tourGuideService.getAllUsers();
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        for (User user : allUsers) {
-            tourGuideService.trackUserLocation(user);
-        }
-
+        allUsers.parallelStream().forEach(user -> {
+            try {
+                tourGuideService.trackUserLocation(user);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
         stopWatch.stop();
         tourGuideService.getTracker().stopTracking();
 
@@ -70,7 +74,7 @@ public class TestPerformance {
         assertTrue(TimeUnit.MINUTES.toSeconds(15) >= TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()));
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void highVolumeGetRewards() {
         GpsUtil gpsUtil = new GpsUtil();
