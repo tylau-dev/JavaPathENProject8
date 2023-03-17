@@ -1,9 +1,6 @@
 package tourGuide.service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -47,33 +44,20 @@ public class RewardsService implements IRewardsService {
 	
 	public void calculateRewards(User user) throws ExecutionException, InterruptedException {
 		UUID uid = user.getUserId();
-		List<VisitedLocation> userLocations = user.getVisitedLocations();
+		Collection<VisitedLocation> userLocations = user.getVisitedLocations();
 		List<Attraction> attractions = gpsUtil.getAttractions();
-		final HashSet<UserReward> userRewardsToAdd = new HashSet<UserReward>();
-		int test = 1111;
-
 		for(VisitedLocation visitedLocation : userLocations) {
 			for(Attraction attraction : attractions) {
-/*
-				userRewardsToAdd.add(new UserReward(visitedLocation, attraction, getRewardPoints(attraction, uid)));
-*/
-				// stocker user.getUserRewards en variable pour la réutiliser à chaque itération ?
 				if (isVisitedLocationInAttractionProximity(visitedLocation, attraction)) {
 					UserReward userReward = new UserReward(visitedLocation, attraction);
 					CompletableFuture.supplyAsync(() -> {
 						return getRewardPoints(attraction, uid);
 					}).thenAccept((p) -> {
 						userReward.setRewardPoints(p);
-//						user.addUserReward(new UserReward(visitedLocation, attraction, p));
-//						userRewardsToAdd.add(new UserReward(visitedLocation, attraction, p));
 					});
-					userRewardsToAdd.add(userReward);
+					user.addUserReward(userReward);
 				}
 			}
-		}
-
-		for (UserReward userReward: userRewardsToAdd) {
-			user.addUserReward(userReward);
 		}
 
 

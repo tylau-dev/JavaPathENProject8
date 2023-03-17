@@ -3,12 +3,14 @@ package tourGuide.service;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import gpsUtil.GpsUtil;
@@ -61,7 +63,7 @@ public class TourGuideService implements ITourGuideService{
 	
 	public VisitedLocation getUserLocation(User user) throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
-			user.getLastVisitedLocation() :
+			user.getLatestVisitedLocation() :
 			trackUserLocation(user);
 		return visitedLocation;
 	}
@@ -80,7 +82,6 @@ public class TourGuideService implements ITourGuideService{
 		}
 	}
 
-	//@todo revoir l'implémentation de trippricer
 	public List<Provider> getTripDeals(User user) {
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
@@ -88,12 +89,21 @@ public class TourGuideService implements ITourGuideService{
 		user.setTripDeals(providers);
 		return providers;
 	}
-	
+
 	public VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException {
-		VisitedLocation visitedLocation = gpsUtil.getUserLocation(user.getUserId());
-		user.addToVisitedLocations(visitedLocation);
-		rewardsService.calculateRewards(user);
-		return visitedLocation;
+		return CompletableFuture.supplyAsync(() -> {
+			return gpsUtil.getUserLocation(user.getUserId());
+		}).thenApply((p) -> {
+			user.addToVisitedLocations(p);
+			try {
+				rewardsService.calculateRewards(user);
+			} catch (ExecutionException e) {
+				throw new RuntimeException(e);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+			return p;
+		}).get();
 	}
 
 	public List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation) {
@@ -126,10 +136,11 @@ public class TourGuideService implements ITourGuideService{
 		List<User> allUser = getAllUsers();
 		List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
 
-		for (User user : allUser) {
-			VisitedLocation latestVisitedLocation = user.getLastVisitedLocation();
+		allUser.parallelStream().forEach(user -> {
+			VisitedLocation latestVisitedLocation = user.getLatestVisitedLocation();
 			result.add(new UserCurrentLocation(user.getUserId(),  new Coordinate(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
-		}
+		});
+
 		return result;
 	}
 
