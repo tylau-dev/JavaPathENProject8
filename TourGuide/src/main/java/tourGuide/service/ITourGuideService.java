@@ -12,6 +12,7 @@ import tripPricer.Provider;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public interface ITourGuideService

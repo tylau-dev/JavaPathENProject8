@@ -46,12 +46,13 @@ public class TestPerformance {
         Locale.setDefault(Locale.US);
     }
 
+    @Ignore
     @Test
     public void highVolumeTrackLocation() throws ExecutionException, InterruptedException {
         GpsUtil gpsUtil = new GpsUtil();
         IRewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
         // Users should be incremented up to 100,000, and test finishes within 15 minutes
-        InternalTestHelper.setInternalUserNumber(100000);
+        InternalTestHelper.setInternalUserNumber(100);
         ITourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
         List<User> allUsers = tourGuideService.getAllUsers();

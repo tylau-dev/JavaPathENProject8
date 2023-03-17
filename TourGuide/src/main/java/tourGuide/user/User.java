@@ -97,7 +97,10 @@ public class User {
 	}
 
 	public VisitedLocation getLatestVisitedLocation() {
-		return visitedLocations.values().stream().max(Comparator.comparing(v -> v.timeVisited)).get();
+
+		return visitedLocations.values().stream().max(
+				Comparator.comparing(v -> v.timeVisited))
+				.get();
 	}
 	
 }
