@@ -90,6 +90,10 @@ public class TourGuideService implements ITourGuideService{
 		return providers;
 	}
 
+//	public VisitedLocation trackUserLocations(List<User> user) {
+//		// @todo
+//	}
+
 	public VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException {
 		return CompletableFuture.supplyAsync(() -> {
 			return gpsUtil.getUserLocation(user.getUserId());
