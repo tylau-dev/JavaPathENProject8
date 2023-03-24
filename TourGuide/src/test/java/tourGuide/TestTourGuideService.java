@@ -155,6 +155,19 @@ public class TestTourGuideService {
 		assertEquals(5, providers.size());
 	}
 
+	@Test
+	public void getUsersLocations() throws ExecutionException, InterruptedException {
+		GpsUtil gpsUtil = new GpsUtil();
+		IRewardsService rewardsService = new RewardsService(gpsUtil, new RewardCentral());
+		InternalTestHelper.setInternalUserNumber(10);
+		ITourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
-	
+		List<User> allUsers = tourGuideService.getAllUsers();
+		List<VisitedLocation> visitedLocations = tourGuideService.trackUsersLocations(allUsers);
+		tourGuideService.getTracker().stopTracking();
+		assertTrue(visitedLocations.size() == 10);
+	}
+
+
+
 }

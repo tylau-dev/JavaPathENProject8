@@ -39,9 +39,9 @@ public class Tracker extends Thread {
 	public void run() {
 <span class="fc" id="L40">		StopWatch stopWatch = new StopWatch();</span>
 		while(true) {
-<span class="pc bpc" id="L42" title="1 of 4 branches missed.">			if(Thread.currentThread().isInterrupted() || stop) {</span>
-<span class="fc" id="L43">				logger.debug(&quot;Tracker stopping&quot;);</span>
-<span class="fc" id="L44">				break;</span>
+<span class="pc bpc" id="L42" title="2 of 4 branches missed.">			if(Thread.currentThread().isInterrupted() || stop) {</span>
+<span class="nc" id="L43">				logger.debug(&quot;Tracker stopping&quot;);</span>
+<span class="nc" id="L44">				break;</span>
 			}
 
 <span class="fc" id="L47">			Collection&lt;User&gt; users = tourGuideService.getAllUsers();</span>
@@ -49,13 +49,13 @@ public class Tracker extends Thread {
 <span class="fc" id="L49">			stopWatch.start();</span>
 <span class="fc" id="L50">			users.forEach(u -&gt; {</span>
 				try {
-<span class="nc" id="L52">					tourGuideService.trackUserLocation(u);</span>
+<span class="fc" id="L52">					tourGuideService.trackUserLocation(u);</span>
 <span class="nc" id="L53">				} catch (ExecutionException e) {</span>
 <span class="nc" id="L54">					throw new RuntimeException(e);</span>
 <span class="fc" id="L55">				} catch (InterruptedException e) {</span>
 <span class="fc" id="L56">					throw new RuntimeException(e);</span>
-<span class="nc" id="L57">				}</span>
-<span class="nc" id="L58">			});</span>
+<span class="fc" id="L57">				}</span>
+<span class="fc" id="L58">			});</span>
 <span class="fc" id="L59">			stopWatch.stop();</span>
 <span class="fc" id="L60">			logger.debug(&quot;Tracker Time Elapsed: &quot; + TimeUnit.MILLISECONDS.toSeconds(stopWatch.getTime()) + &quot; seconds.&quot;); </span>
 <span class="fc" id="L61">			stopWatch.reset();</span>
