@@ -17,8 +17,8 @@ public class NearbyAttractionResponse extends Coordinate
 <span class="fc" id="L17">    }</span>
 
     public void addNearbyAttraction(NearbyAttraction nearbyAttraction) {
-<span class="fc" id="L20">        this.nearbyAttractions.add(nearbyAttraction);</span>
-<span class="fc" id="L21">    }</span>
+<span class="nc" id="L20">        this.nearbyAttractions.add(nearbyAttraction);</span>
+<span class="nc" id="L21">    }</span>
 
     public List&lt;NearbyAttraction&gt; filterTopFiveAttraction() {
 <span class="fc" id="L24">        return this.nearbyAttractions.stream().sorted(Comparator.comparing(NearbyAttraction::getDistance)).limit(5).collect(Collectors.toList());</span>

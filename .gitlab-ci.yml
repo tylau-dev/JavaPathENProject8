@@ -1,0 +1,26 @@
+image: openjdk:8
+
+stages:
+  - build
+  - test
+
+before_script:
+  - GRADLE_USER_HOME="$(pwd)/TourGuide/.gradle"
+  - export GRADLE_USER_HOME
+  - chmod +x ./TourGuide/gradlew
+
+build:
+  stage: build
+  script:
+    - ./TourGuide/gradlew build
+  artifacts:
+    paths:
+      - ./TourGuide/build/libs/*.jar
+  only:
+    - master
+
+test:
+  stage: test
+  script:
+    - cd "./TourGuide/"
+    - ./gradlew test

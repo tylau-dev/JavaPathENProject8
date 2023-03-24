@@ -90,6 +90,20 @@ public class TourGuideService implements ITourGuideService{
 		return providers;
 	}
 
+	public List<VisitedLocation> trackUsersLocations(List<User> userList) {
+		List<VisitedLocation> visitedLocations = new ArrayList<>();
+		userList.parallelStream().forEach(user -> {
+			try {
+				visitedLocations.add(trackUserLocation(user));
+			} catch (ExecutionException e) {
+				throw new RuntimeException(e);
+			} catch (InterruptedException e) {
+				throw new RuntimeException(e);
+			}
+		});
+		return visitedLocations;
+	}
+
 	public VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException {
 		return CompletableFuture.supplyAsync(() -> {
 			return gpsUtil.getUserLocation(user.getUserId());

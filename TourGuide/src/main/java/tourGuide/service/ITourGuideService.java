@@ -24,6 +24,7 @@ public interface ITourGuideService
     void addUser(User user);
     List<Provider> getTripDeals(User user);
     VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException;
+    List<VisitedLocation> trackUsersLocations(List<User> userList);
     List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation);
     NearbyAttractionResponse getFormatTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException;
     List<UserCurrentLocation> getAllUserCurrentLocation();
