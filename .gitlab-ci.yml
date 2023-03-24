@@ -3,7 +3,7 @@ image: openjdk:8
 stages:
   - build
   - test
-g
+
 before_script:
   - GRADLE_USER_HOME="$(pwd)/TourGuide/.gradle"
   - export GRADLE_USER_HOME
