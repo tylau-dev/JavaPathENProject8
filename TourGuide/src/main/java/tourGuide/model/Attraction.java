@@ -1,12 +1,11 @@
-package tourGuide.response;
+package tourGuide.model;
 
-// Renommer en Attraction
-public class NearbyAttraction extends Coordinate {
+public class Attraction extends Location {
     private String name;
     private Double distance;
     private int rewardPoints;
 
-    public NearbyAttraction(String name, double distance, int rewardPoints, Double latitude, Double longitude) {
+    public Attraction(String name, double distance, int rewardPoints, Double latitude, Double longitude) {
         super(latitude, longitude);
         this.name = name;
         this.distance = distance;

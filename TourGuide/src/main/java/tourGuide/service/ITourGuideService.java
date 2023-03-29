@@ -2,17 +2,16 @@ package tourGuide.service;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import tourGuide.response.NearbyAttractionResponse;
-import tourGuide.response.UserCurrentLocation;
+import tourGuide.model.NearbyAttraction;
+import tourGuide.model.UserCurrentLocation;
 import tourGuide.tracker.Tracker;
-import tourGuide.user.User;
-import tourGuide.user.UserReward;
+import tourGuide.model.User;
+import tourGuide.model.UserReward;
 import tripPricer.Provider;
 
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public interface ITourGuideService
@@ -24,9 +23,9 @@ public interface ITourGuideService
     void addUser(User user);
     List<Provider> getTripDeals(User user);
     VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException;
-    List<VisitedLocation> trackUsersLocations(List<User> userList);
+    List<VisitedLocation> trackUserListLocation(List<User> userList);
     List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation);
-    NearbyAttractionResponse getFormatTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException;
+    NearbyAttraction getTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException;
     List<UserCurrentLocation> getAllUserCurrentLocation();
 
     /*

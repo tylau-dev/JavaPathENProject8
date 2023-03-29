@@ -1,11 +1,11 @@
-package tourGuide.response;
+package tourGuide.model;
 
 // Renommer en Location
-public class Coordinate {
+public class Location {
     private Double longitude;
     private Double latitude;
 
-    public Coordinate(Double latitude, Double longitude) {
+    public Location(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

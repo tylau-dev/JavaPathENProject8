@@ -1,6 +1,8 @@
 package tourGuide.helper;
 
+import gpsUtil.location.Attraction;
 import gpsUtil.location.Location;
+import gpsUtil.location.VisitedLocation;
 
 public class DistanceHelper {
     private static final double STATUTE_MILES_PER_NAUTICAL_MILE = 1.15077945;
@@ -18,4 +20,8 @@ public class DistanceHelper {
         double statuteMiles = STATUTE_MILES_PER_NAUTICAL_MILE * nauticalMiles;
         return statuteMiles;
     }
+
+
+
+
 }

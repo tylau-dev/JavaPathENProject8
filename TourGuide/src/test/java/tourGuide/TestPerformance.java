@@ -17,7 +17,7 @@ import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.service.*;
-import tourGuide.user.User;
+import tourGuide.model.User;
 
 public class TestPerformance {
 
@@ -59,7 +59,7 @@ public class TestPerformance {
 
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
-        tourGuideService.trackUsersLocations(allUsers);
+        tourGuideService.trackUserListLocation(allUsers);
         stopWatch.stop();
         tourGuideService.getTracker().stopTracking();
 
