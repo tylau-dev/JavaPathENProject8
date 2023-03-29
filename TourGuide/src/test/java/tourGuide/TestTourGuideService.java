@@ -2,27 +2,23 @@ package tourGuide;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static tourGuide.helper.DistanceHelper.getDistance;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import gpsUtil.GpsUtil;
-import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.response.NearbyAttraction;
-import tourGuide.response.NearbyAttractionResponse;
-import tourGuide.response.UserCurrentLocation;
+import tourGuide.model.NearbyAttraction;
+import tourGuide.model.UserCurrentLocation;
 import tourGuide.service.*;
 import tourGuide.service.ITourGuideService;
 import tourGuide.service.TourGuideService;
-import tourGuide.user.User;
+import tourGuide.model.User;
 import tripPricer.Provider;
 
 public class TestTourGuideService {
@@ -115,7 +111,7 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 
-		NearbyAttractionResponse attractions = tourGuideService.getFormatTopFiveNearbyAttractions(user);
+		NearbyAttraction attractions = tourGuideService.getTopFiveNearbyAttractions(user);
 
 		tourGuideService.getTracker().stopTracking();
 
@@ -163,7 +159,7 @@ public class TestTourGuideService {
 		ITourGuideService tourGuideService = new TourGuideService(gpsUtil, rewardsService);
 
 		List<User> allUsers = tourGuideService.getAllUsers();
-		List<VisitedLocation> visitedLocations = tourGuideService.trackUsersLocations(allUsers);
+		List<VisitedLocation> visitedLocations = tourGuideService.trackUserListLocation(allUsers);
 		tourGuideService.getTracker().stopTracking();
 		assertTrue(visitedLocations.size() == 10);
 	}
