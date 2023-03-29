@@ -41,7 +41,8 @@ public class RewardsService implements IRewardsService {
 
 		proximityBuffer = defaultProximityBuffer;
 	}
-	
+
+	// A bouger dans Rewards
 	public void calculateRewards(User user) throws ExecutionException, InterruptedException {
 		UUID uid = user.getUserId();
 		Collection<VisitedLocation> userLocations = user.getVisitedLocations();
@@ -59,10 +60,13 @@ public class RewardsService implements IRewardsService {
 				}
 			}
 		}
-
-
 	}
-	
+
+	public int getRewardPoints(Attraction attraction, UUID userId) {
+		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, userId);
+	}
+
+	// A bouger dans AttractionService ou Helper (static class)
 	public boolean isLocationWithinAttractionProximity(Attraction attraction, Location location) {
 		return getDistance(attraction, location) > attractionProximityRange ? false : true;
 	}
@@ -71,8 +75,6 @@ public class RewardsService implements IRewardsService {
 		return getDistance(attraction, visitedLocation.location) > proximityBuffer ? false : true;
 	}
 	
-	public int getRewardPoints(Attraction attraction, UUID userId) {
-		return rewardsCentral.getAttractionRewardPoints(attraction.attractionId, userId);
-	}
+
 
 }

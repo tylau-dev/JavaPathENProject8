@@ -1,5 +1,6 @@
 package tourGuide.response;
 
+// Renommer en Attraction
 public class NearbyAttraction extends Coordinate {
     private String name;
     private Double distance;

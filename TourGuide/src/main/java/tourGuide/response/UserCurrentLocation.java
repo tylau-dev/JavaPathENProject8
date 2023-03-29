@@ -3,9 +3,9 @@ package tourGuide.response;
 import java.util.List;
 import java.util.UUID;
 
+// Renommer en UserLocation
 public class UserCurrentLocation {
     private UUID userId;
-
     private Coordinate userCoordinate;
 
     public UserCurrentLocation(UUID userId, Coordinate userCoordinate) {

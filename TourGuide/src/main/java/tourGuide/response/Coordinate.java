@@ -1,5 +1,6 @@
 package tourGuide.response;
 
+// Renommer en Location
 public class Coordinate {
     private Double longitude;
     private Double latitude;

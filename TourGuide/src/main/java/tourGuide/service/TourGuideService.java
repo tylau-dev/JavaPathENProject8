@@ -57,31 +57,37 @@ public class TourGuideService implements ITourGuideService{
 	}
 
 
+	// UserService
 	public Collection<UserReward> getUserRewards(User user) {
 		return user.getUserRewards();
 	}
-	
+
+	// UserService
 	public VisitedLocation getUserLocation(User user) throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = (user.getVisitedLocations().size() > 0) ?
 			user.getLatestVisitedLocation() :
 			trackUserLocation(user);
 		return visitedLocation;
 	}
-	
+
+	// UserService
 	public User getUser(String userName) {
 		return internalUserMap.get(userName);
 	}
-	
+
+	// UserService
 	public List<User> getAllUsers() {
 		return new ArrayList<>(internalUserMap.values());
 	}
-	
+
+	// UserService
 	public void addUser(User user) {
 		if(!internalUserMap.containsKey(user.getUserName())) {
 			internalUserMap.put(user.getUserName(), user);
 		}
 	}
 
+	// TripService
 	public List<Provider> getTripDeals(User user) {
 		int cumulativeRewardPoints = user.getUserRewards().stream().mapToInt(i -> i.getRewardPoints()).sum();
 		List<Provider> providers = tripPricer.getPrice(tripPricerApiKey, user.getUserId(), user.getUserPreferences().getNumberOfAdults(), 
@@ -90,6 +96,7 @@ public class TourGuideService implements ITourGuideService{
 		return providers;
 	}
 
+	// UserService
 	public List<VisitedLocation> trackUsersLocations(List<User> userList) {
 		List<VisitedLocation> visitedLocations = new ArrayList<>();
 		userList.parallelStream().forEach(user -> {
@@ -104,6 +111,7 @@ public class TourGuideService implements ITourGuideService{
 		return visitedLocations;
 	}
 
+	// UserService
 	public VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException {
 		return CompletableFuture.supplyAsync(() -> {
 			return gpsUtil.getUserLocation(user.getUserId());
@@ -120,6 +128,7 @@ public class TourGuideService implements ITourGuideService{
 		}).get();
 	}
 
+	// AttractionService
 	public List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation) {
 		List<Attraction> nearbyAttractions = new ArrayList<>();
 		for(Attraction attraction : gpsUtil.getAttractions()) {
@@ -131,6 +140,7 @@ public class TourGuideService implements ITourGuideService{
 		return nearbyAttractions;
 	}
 
+	// AttractionService
 	public NearbyAttractionResponse getFormatTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = getUserLocation(user);
 		List<Attraction> closeAttractions = getNearbyAttractions(visitedLocation);
@@ -146,6 +156,7 @@ public class TourGuideService implements ITourGuideService{
 		return result;
 	}
 
+	// UserService + renommer
 	public List<UserCurrentLocation> getAllUserCurrentLocation() {
 		List<User> allUser = getAllUsers();
 		List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
