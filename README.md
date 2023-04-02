@@ -1,4 +1,4 @@
-# Paymybuddy Prototype Web Application
+# TourGuide Prototype Web Application
 
 Paymybuddy is a project interacts with a MySQL Database through Ja
 
