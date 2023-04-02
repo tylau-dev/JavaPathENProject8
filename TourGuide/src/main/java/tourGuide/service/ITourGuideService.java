@@ -2,8 +2,8 @@ package tourGuide.service;
 
 import gpsUtil.location.Attraction;
 import gpsUtil.location.VisitedLocation;
-import tourGuide.model.NearbyAttraction;
-import tourGuide.model.UserCurrentLocation;
+import tourGuide.model.NearbyAttractionResponse;
+import tourGuide.model.UserCurrentLocationResponse;
 import tourGuide.tracker.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -25,8 +25,8 @@ public interface ITourGuideService
     VisitedLocation trackUserLocation(User user) throws ExecutionException, InterruptedException;
     List<VisitedLocation> trackUserListLocation(List<User> userList);
     List<Attraction> getNearbyAttractions(VisitedLocation visitedLocation);
-    NearbyAttraction getTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException;
-    List<UserCurrentLocation> getAllUserCurrentLocation();
+    NearbyAttractionResponse getTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException;
+    List<UserCurrentLocationResponse> getAllUserCurrentLocation();
 
     /*
         Test Methods

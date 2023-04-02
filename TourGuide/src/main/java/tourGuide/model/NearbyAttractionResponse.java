@@ -4,11 +4,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NearbyAttraction extends Location
+public class NearbyAttractionResponse extends Location
 {
     private List<Attraction> attractions;
 
-    public NearbyAttraction(double userLatitude, double userLongitude, List<Attraction> attractions) {
+    public NearbyAttractionResponse(double userLatitude, double userLongitude, List<Attraction> attractions) {
         super(userLatitude, userLongitude);
         this.attractions = attractions;
     }

@@ -2,12 +2,11 @@ package tourGuide.model;
 
 import java.util.UUID;
 
-// Renommer en UserLocation
-public class UserCurrentLocation {
+public class UserCurrentLocationResponse {
     private UUID userId;
     private Location userLocation;
 
-    public UserCurrentLocation(UUID userId, Location userLocation) {
+    public UserCurrentLocationResponse(UUID userId, Location userLocation) {
         this.userId = userId;
         this.userLocation = userLocation;
     }
