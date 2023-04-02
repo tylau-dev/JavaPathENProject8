@@ -13,8 +13,8 @@ import gpsUtil.GpsUtil;
 import gpsUtil.location.VisitedLocation;
 import rewardCentral.RewardCentral;
 import tourGuide.helper.InternalTestHelper;
-import tourGuide.model.NearbyAttraction;
-import tourGuide.model.UserCurrentLocation;
+import tourGuide.model.NearbyAttractionResponse;
+import tourGuide.model.UserCurrentLocationResponse;
 import tourGuide.service.*;
 import tourGuide.service.ITourGuideService;
 import tourGuide.service.TourGuideService;
@@ -111,7 +111,7 @@ public class TestTourGuideService {
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 		VisitedLocation visitedLocation = tourGuideService.trackUserLocation(user);
 
-		NearbyAttraction attractions = tourGuideService.getTopFiveNearbyAttractions(user);
+		NearbyAttractionResponse attractions = tourGuideService.getTopFiveNearbyAttractions(user);
 
 		tourGuideService.getTracker().stopTracking();
 
@@ -128,7 +128,7 @@ public class TestTourGuideService {
 
 		User user = new User(UUID.randomUUID(), "jon", "000", "jon@tourGuide.com");
 
-		List<UserCurrentLocation> userCurrentLocation = tourGuideService.getAllUserCurrentLocation();
+		List<UserCurrentLocationResponse> userCurrentLocation = tourGuideService.getAllUserCurrentLocation();
 
 		tourGuideService.getTracker().stopTracking();
 

@@ -16,8 +16,8 @@ import gpsUtil.location.VisitedLocation;
 import tourGuide.helper.InternalTestHelper;
 import tourGuide.model.Location;
 import tourGuide.model.Attraction;
-import tourGuide.model.NearbyAttraction;
-import tourGuide.model.UserCurrentLocation;
+import tourGuide.model.NearbyAttractionResponse;
+import tourGuide.model.UserCurrentLocationResponse;
 import tourGuide.tracker.Tracker;
 import tourGuide.model.User;
 import tourGuide.model.UserReward;
@@ -125,11 +125,11 @@ public class TourGuideService implements ITourGuideService{
 		return attractions;
 	}
 
-	public NearbyAttraction getTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException {
+	public NearbyAttractionResponse getTopFiveNearbyAttractions(User user) throws ExecutionException, InterruptedException {
 		VisitedLocation visitedLocation = getUserLocation(user);
 		List<gpsUtil.location.Attraction> closeAttractions = getNearbyAttractions(visitedLocation);
 
-		NearbyAttraction result = new NearbyAttraction(visitedLocation.location.latitude, visitedLocation.location.longitude, new ArrayList<Attraction>());
+		NearbyAttractionResponse result = new NearbyAttractionResponse(visitedLocation.location.latitude, visitedLocation.location.longitude, new ArrayList<Attraction>());
 
 		for (gpsUtil.location.Attraction attraction : closeAttractions) {
 			result.addNearbyAttraction(new Attraction(attraction.attractionName, getDistance(visitedLocation.location, attraction), rewardsService.getRewardPoints(attraction, user.getUserId()), attraction.longitude, attraction.latitude));
@@ -140,13 +140,13 @@ public class TourGuideService implements ITourGuideService{
 		return result;
 	}
 
-	public List<UserCurrentLocation> getAllUserCurrentLocation() {
+	public List<UserCurrentLocationResponse> getAllUserCurrentLocation() {
 		List<User> allUser = getAllUsers();
-		List<UserCurrentLocation> result = new ArrayList<UserCurrentLocation>();
+		List<UserCurrentLocationResponse> result = new ArrayList<UserCurrentLocationResponse>();
 
 		allUser.parallelStream().forEach(user -> {
 			VisitedLocation latestVisitedLocation = user.getLatestVisitedLocation();
-			result.add(new UserCurrentLocation(user.getUserId(),  new Location(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
+			result.add(new UserCurrentLocationResponse(user.getUserId(),  new Location(latestVisitedLocation.location.latitude, latestVisitedLocation.location.longitude)));
 		});
 
 		return result;
